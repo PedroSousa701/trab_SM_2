@@ -14,7 +14,7 @@ export class Start extends Phaser.Scene {
 
     create() {
         this.background = this.add.tileSprite(640, 360, 1280, 720, 'background');
-
+        // asa
         const logo = this.add.image(640, 200, 'logo');
 
         const ship = this.add.sprite(640, 360, 'ship');
