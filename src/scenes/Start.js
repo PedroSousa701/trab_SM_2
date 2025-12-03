@@ -3,6 +3,7 @@ export class Start extends Phaser.Scene {
     constructor() {
         super('Start');
     }
+    //aa
 
     preload() {
         this.load.image('background', 'assets/space.png');
