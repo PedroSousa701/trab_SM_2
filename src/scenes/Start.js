@@ -3,44 +3,79 @@ export class Start extends Phaser.Scene {
     constructor() {
         super('Start');
     }
-    //aa
 
     preload() {
-        this.load.image('background', 'assets/space.png');
-        this.load.image('logo', 'assets/phaser.png');
-
-        //  The ship sprite is CC0 from https://ansimuz.itch.io - check out his other work!
-        this.load.spritesheet('ship', 'assets/spaceship.png', { frameWidth: 176, frameHeight: 96 });
+        this.load.image('fundo', 'assets/sky.png');
+        this.load.image('platform', 'assets/platform.png');
+        this.load.spritesheet('heroi', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
     }
 
     create() {
-        this.background = this.add.tileSprite(640, 360, 1280, 720, 'background');
-        // asa
-        const logo = this.add.image(640, 200, 'logo');
+        // Adicionar imagem de fundo
+        this.add.image(400, 300, 'fundo');
+        
+        // Criar grupo estático de física para as plataformas
+        this.platforms = this.physics.add.staticGroup();
 
-        const ship = this.add.sprite(640, 360, 'ship');
+        // Criar a plataforma principal
+        this.platforms.create(400, 568, 'platform').setScale(3).refreshBody();
+        
+        // criação do player e a pocição onde ele aparece
+        this.player = this.physics.add.sprite(100, 450, 'heroi');
 
-        ship.anims.create({
-            key: 'fly',
-            frames: this.anims.generateFrameNumbers('ship', { start: 0, end: 2 }),
-            frameRate: 15,
+        // Impede que o player saia da tela
+        this.player.setCollideWorldBounds(true);
+
+        // manter o player na plataforma
+        this.physics.add.collider(this.player, this.platforms);
+
+        // atribuir alguma elasticidade ao player
+        this.player.setBounce(0.2);
+        
+        // criar animacoes do player
+        this.anims.create({
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('heroi', { start: 0, end: 3 }),
+            frameRate: 10,
             repeat: -1
         });
 
-        ship.play('fly');
-
-        this.tweens.add({
-            targets: logo,
-            y: 400,
-            duration: 1500,
-            ease: 'Sine.inOut',
-            yoyo: true,
-            loop: -1
+        this.anims.create({
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('heroi', { start: 5, end: 8 }),
+            frameRate: 10,
+            repeat: -1
         });
+        
+        this.anims.create({
+            key: 'turn',
+            frames: [ { key: 'heroi', frame: 4 } ],
+            frameRate: 10,
+            repeat: 20
+        });
+        
+        // utilizar o teclado
+        this.cursors = this.input.keyboard.createCursorKeys();
+        
     }
 
     update() {
-        this.background.tilePositionX += 2;
+        if (this.cursors.left.isDown) {
+            this.player.setVelocityX(-160);
+            this.player.anims.play('left', true);
+        }
+        else if (this.cursors.right.isDown) {
+            this.player.setVelocityX(160);
+            this.player.anims.play('right', true);
+        }
+        else {
+            this.player.setVelocityX(0);
+            this.player.anims.play('turn');
+        }
+        
+        if (this.cursors.up.isDown && this.player.body.touching.down) {
+            this.player.setVelocityY(-350);
+        }
     }
     
 }
