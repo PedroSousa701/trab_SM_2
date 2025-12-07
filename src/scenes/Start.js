@@ -21,6 +21,14 @@ export class Start extends Phaser.Scene {
         this.load.image('caixa', 'assets/box.png');
         this.load.image('meteoro', 'assets/meteor.png');
         this.load.image('escudo', 'assets/box.png'); // Usar imagem da caixa como escudo
+        this.load.audio('morte', 'assets/Audio/morte.mp3');
+        this.load.audio('alerta', 'assets/Audio/alerta.mp3');
+        this.load.audio('apanha', 'assets/Audio/apanha.mp3');
+        this.load.audio('quebrar', 'assets/Audio/quebrar.mp3');
+        this.load.audio('explosao', 'assets/Audio/explosao.mp3');
+        this.load.audio('escudo', 'assets/Audio/escudo.mp3');
+        this.load.audio('salto', 'assets/Audio/salto.mp3');
+    
     }
 
     create() {
@@ -149,6 +157,9 @@ export class Start extends Phaser.Scene {
                     backgroundColor: '#000000',
                     padding: { x: 10, y: 5 }
                 }).setOrigin(0.5);
+
+                // Tocar som de alerta
+                this.sound.play('alerta');
                 
                 // Fazer o texto desaparecer após 2 segundos
                 this.time.delayedCall(2000, () => {
@@ -176,6 +187,9 @@ export class Start extends Phaser.Scene {
 
         // Se meteoro bater na plataforma, ele desaparece
         this.physics.add.collider(this.meteoros, this.platforms, (meteoro) => {
+            // tocar som ao destruir o escudo
+            this.sound.play('explosao');
+            
             meteoro.disableBody(true, true);
         });
         
@@ -190,6 +204,8 @@ export class Start extends Phaser.Scene {
         // Reduzir vidas
         this.lives -= 1;
         this.livesText.setText('Vidas: ' + this.lives);
+        // Tocar som de morte
+        this.sound.play('morte');
 
         if (this.lives <= 0) {
             // Fim de jogo - parar meteoros e ir para tela de GameOver
@@ -221,6 +237,8 @@ export class Start extends Phaser.Scene {
         // Detectar tecla T para ativar escudo
         if (Phaser.Input.Keyboard.JustDown(this.keyT)) {
             if (this.boxesCollected >= 10 && !this.shield) {
+                // tocar som ao chamar o escud
+                this.sound.play('escudo');
                 this.createShield();
             }
         }
@@ -240,6 +258,8 @@ export class Start extends Phaser.Scene {
         
         if (this.cursors.up.isDown && this.player.body.touching.down) {
             this.player.setVelocityY(-350);
+            // tocar som ao saltar
+            this.sound.play('salto');
         }
     }
 
@@ -253,6 +273,8 @@ export class Start extends Phaser.Scene {
         this.boxesCollected += 1;
         this.shieldText.setText('Escudo: ' + this.boxesCollected + '/10');
 
+        // tocar som ao apanhar a caixa
+        this.sound.play('apanha');
         // verificar se ainda há caixas ativas
         if (this.boxes.countActive(true) === 0){
             // colocar caixas em posições aleatórias distintas
@@ -287,6 +309,9 @@ export class Start extends Phaser.Scene {
     shieldHit(shieldObj, meteor) {
         // remover o meteoro
         meteor.disableBody(true, true);
+
+        // tocar som ao destruir o escudo
+        this.sound.play('quebrar');
 
         // destruir o escudo e limpar collider
         if (this.shieldCollider) {

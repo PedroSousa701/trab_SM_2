@@ -20,8 +20,8 @@ const config = {
         }
     },
     scene: [
-        Start,
         StartMenu,
+        Start,
         GameOver
     ],
     scale: {
