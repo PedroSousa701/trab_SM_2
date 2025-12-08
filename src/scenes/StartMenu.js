@@ -25,6 +25,13 @@ export class StartMenu extends Phaser.Scene {
         this.input.keyboard.on('keydown-ENTER', () => {
             this.startGame();
         });
+
+        // Botão 'Instruções' para abrir a cena de instruções
+        const instrText = this.add.text(400, 440, 'INSTRUÇÕES', { fontSize: '36px', fill: '#ffffff', backgroundColor: '#05668d', padding: { x: 16, y: 8 } }).setOrigin(0.5);
+        instrText.setInteractive({ useHandCursor: true });
+        instrText.on('pointerdown', () => {
+            this.scene.start('Instructions');
+        });
     }
 
     startGame() {

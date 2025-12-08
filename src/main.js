@@ -1,5 +1,6 @@
 import { Start } from './scenes/Start.js';
 import { StartMenu } from './scenes/StartMenu.js';
+import { Instructions } from './scenes/Instructions.js';
 import { GameOver } from './scenes/GameOver.js';    
 
 const config = {
@@ -21,6 +22,7 @@ const config = {
     },
     scene: [
         StartMenu,
+        Instructions,
         Start,
         GameOver
     ],
